@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import packageJson from '../package.json';
 import 'colors';
 import program from 'commander';
