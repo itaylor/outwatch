@@ -1,7 +1,7 @@
 {
   "name": "outwatch",
   "version": "0.0.1",
-  "description": "A simple process monitor that allow you to watch stdout and stderr and take actions based on their values",
+  "description": "A small cli utility to allow you to watch and evaluate the output of a command and run other commands when matches are found in the output.",
   "main": "dist/index.js",
   "dependencies": {
     "commander": "^2.8.1",
