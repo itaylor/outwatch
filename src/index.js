@@ -85,7 +85,6 @@ function doMatching(data) {
 }
 
 function logErr(data) {
-  console.log(program.noColor);
   const dataUtf8 = data.toString('utf8');
   console.error(!program.noColor ? dataUtf8.red : dataUtf8);
 }
