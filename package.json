@@ -4,8 +4,9 @@
   "description": "A small cli utility to allow you to watch and evaluate the output of a command and run other commands when matches are found in the output.",
   "main": "dist/index.js",
   "dependencies": {
+    "colors": "^1.1.0",
     "commander": "^2.8.1",
-    "colors": "^1.1.0"
+    "stream-splitter": "^0.3.2"
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --opts './mocha.opts'"
