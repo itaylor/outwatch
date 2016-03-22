@@ -8,13 +8,13 @@ I created it to use with a single-process docker container so that I could watch
 npm install -g outwatch
 ```
 
-You can get access to the line that matched `<matchexpr>` by using the variable `OVERWATCH_LINE` in your
+You can get access to the line that matched `<matchexpr>` by using the variable `OUTWATCH_LINE` in your
 
 
 # Usage example
 This watches a file, looks for the word 'error' and writes lines with that error to errorReport.txt
 ```
-outwatch "tail -f /some/file.log" "/error/gi" "touch errorReport.txt; echo \$OVERWATCH_LINE >> errorReport.txt"
+outwatch "tail -f /some/file.log" "/error/gi" "touch errorReport.txt; echo \$OUTWATCH_LINE >> errorReport.txt"
 
 ```
 
