@@ -90,7 +90,6 @@ function doMatching(data) {
 }
 
 function logErr(data) {
-  console.log(_commander2.default.noColor);
   var dataUtf8 = data.toString('utf8');
   console.error(!_commander2.default.noColor ? dataUtf8.red : dataUtf8);
 }
