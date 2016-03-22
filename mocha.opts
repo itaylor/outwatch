@@ -1,0 +1,3 @@
+--require expect
+--ui tdd
+--compilers js:babel-register
