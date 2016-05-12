@@ -50,7 +50,7 @@ if (!process.argv.slice(3).length) {
 }
 
 const spawn = require('child_process').spawn;
-const child = spawn(`${__dirname}/../run.sh`, [program.command], { shell: true });
+const child = spawn(`${__dirname}/../run.sh`, [program.command], { shell: false });
 let stopped = false;
 child.on('close', code => process.exit(code));
 child.stdout.pipe(StreamSplitter('\n')).on('token', handleStd);
@@ -73,7 +73,7 @@ function doMatching(data) {
     if (program.stopOnMatch) {
       stopped = true;
     }
-    const spawned = spawn(`${__dirname}/../run.sh`, [program.execute, data], { shell: true });
+    const spawned = spawn(`${__dirname}/../run.sh`, [program.execute, data], { shell: false });
     spawned.stdout.pipe(StreamSplitter('\n')).on('token', logStd);
     spawned.stderr.pipe(StreamSplitter('\n')).on('token', logErr);
     spawned.on('close', (code) => {

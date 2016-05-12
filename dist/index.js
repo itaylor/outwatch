@@ -53,7 +53,7 @@ if (!process.argv.slice(3).length) {
 }
 
 var spawn = require('child_process').spawn;
-var child = spawn(__dirname + '/../run.sh', [_commander2.default.command], { shell: true });
+var child = spawn(__dirname + '/../run.sh', [_commander2.default.command], { shell: false });
 var stopped = false;
 child.on('close', function (code) {
   return process.exit(code);
@@ -78,7 +78,7 @@ function doMatching(data) {
     if (_commander2.default.stopOnMatch) {
       stopped = true;
     }
-    var spawned = spawn(__dirname + '/../run.sh', [_commander2.default.execute, data], { shell: true });
+    var spawned = spawn(__dirname + '/../run.sh', [_commander2.default.execute, data], { shell: false });
     spawned.stdout.pipe((0, _streamSplitter2.default)('\n')).on('token', logStd);
     spawned.stderr.pipe((0, _streamSplitter2.default)('\n')).on('token', logErr);
     spawned.on('close', function (code) {

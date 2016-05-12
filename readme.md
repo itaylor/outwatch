@@ -10,7 +10,7 @@ Outwatch currently requires bash shell to be installed (though it needn't be the
 npm install -g outwatch
 ```
 
-You can get access to the line that matched `<matchexpr>` by using the variable `OUTWATCH_LINE` in your
+You can get access to the line that matched `<matchexpr>` by using the variable `OUTWATCH_LINE` in your output.
 
 
 # Usage example
