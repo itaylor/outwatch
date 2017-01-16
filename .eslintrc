@@ -1,8 +1,4 @@
 {
-  "parser": "babel-eslint",
-  "plugins": [
-    "babel",
-  ],
   "env": {
     "node": true,
     "es6": true,

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import packageJson from '../package.json';
-import 'colors';
-import program from 'commander';
-import StreamSplitter from 'stream-splitter';
+const packageJson = require('../package.json');
+require('colors');
+const program = require('commander');
+const StreamSplitter = require('stream-splitter');
 
 program
   .version(packageJson.version)
@@ -27,6 +27,8 @@ program
   .option('-s, --stopOnMatch', 'Stop matching once a match has been found')
   .option('-e, --exitOnMatch', 'Exit the process when a match is found')
   .option('-n, --noColor', "Don't use ascii colors to make stderr red")
+  .option('-sp, --shellPath', 'Path to the shell you want to use (defaults to /bin/bash)')
+  .option('-v, --verbose', 'Log data about in progress matches and passed commands (helps debug shell escaping issues)')
   .on('--help', () => {
     console.log('  Command Reference: ');
     console.log('');
@@ -50,9 +52,27 @@ if (!process.argv.slice(3).length) {
 }
 
 const spawn = require('child_process').spawn;
-const child = spawn(`${__dirname}/../run.sh`, [program.command], { shell: false });
+const shell = program.shellPath || '/bin/bash';
+if (program.logParams || program.verbose) {
+  console.log('Outwatch started...');
+  console.log('Command:', program.command);
+  console.log('Match Expression:', program.matchexpr);
+  console.log('Execute command:', program.execute);
+  console.log('Using shell:', shell);
+}
+const child = spawn(program.command, { shell });
+
 let stopped = false;
-child.on('close', code => process.exit(code));
+let shouldExitAfterMatchExec = true;
+let matchExecCount = 0;
+let commandExitCode = 0;
+child.on('close', code => {
+  commandExitCode = code;
+  shouldExitAfterMatchExec = true;
+  if (matchExecCount === 0) {
+    process.exit(commandExitCode);
+  }
+});
 child.stdout.pipe(StreamSplitter('\n')).on('token', handleStd);
 child.stderr.pipe(StreamSplitter('\n')).on('token', handleErr);
 
@@ -70,15 +90,30 @@ function handleErr(data) {
 
 function doMatching(data) {
   if (!stopped && data.match(program.matchexpr)) {
-    if (program.stopOnMatch) {
+    if (program.verbose) {
+      console.log('Outwatch: found matching data for line:', data);
+    }
+    matchExecCount++;
+    if (program.exitOnMatch || program.stopOnMatch) {
       stopped = true;
     }
-    const spawned = spawn(`${__dirname}/../run.sh`, [program.execute, data], { shell: false });
+    const escapedData = escapeStrongBashSingleQuotes(data);
+    const exprToRun = `OUTWATCH_LINE='${escapedData}' ${program.execute}`;
+
+    if (program.verbose) {
+      console.log('Outwatch: about to run command', exprToRun);
+    }
+
+    const spawned = spawn(exprToRun, { shell });
     spawned.stdout.pipe(StreamSplitter('\n')).on('token', logStd);
     spawned.stderr.pipe(StreamSplitter('\n')).on('token', logErr);
     spawned.on('close', (code) => {
-      if (program.exitOnMatch) {
-        process.exit(code);
+      matchExecCount--;
+      if (program.exitOnMatch || shouldExitAfterMatchExec) {
+        if (matchExecCount === 0) {
+          child.kill();
+          process.exit(commandExitCode || code);
+        }
       }
     });
   }
@@ -92,4 +127,8 @@ function logErr(data) {
 function logStd(data) {
   const dataUtf8 = data.toString('utf8');
   console.log(dataUtf8);
+}
+
+function escapeStrongBashSingleQuotes(str) {
+  return str.replace(/'/g, "'\\''");
 }
