@@ -1,6 +1,6 @@
 {
   "name": "outwatch",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A small cli utility to allow you to watch and evaluate the output of a command and run other commands when matches are found in the output.",
   "main": "src/index.js",
   "dependencies": {
