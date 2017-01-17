@@ -63,7 +63,7 @@ if (program.logParams || program.verbose) {
 const child = spawn(program.command, { shell });
 
 let stopped = false;
-let shouldExitAfterMatchExec = true;
+let shouldExitAfterMatchExec = false;
 let matchExecCount = 0;
 let commandExitCode = 0;
 child.on('close', code => {
